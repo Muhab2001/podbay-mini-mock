@@ -1,11 +1,14 @@
 
+
 import { Database } from "./schemas/dummy";
 import  pg from 'pg';
 const {Pool} = pg
 import { Kysely, PostgresDialect } from "kysely";
 
 
+
 export const initDB = () => {
+    
     const dialect =new PostgresDialect({
         pool: new Pool({
             database: process.env.DB_NAME,
@@ -23,3 +26,5 @@ export const initDB = () => {
     })
     
 }
+
+initDB()

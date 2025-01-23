@@ -7,7 +7,7 @@ import z from 'zod'
 import {pathToFileURL} from 'url'
 import { realpathSync } from "fs";
 import { Kysely } from "kysely";
-import { Database } from "./database/schemas/dummy";
+import { Database } from "./database/schemas/full_db";
 import { fastifyKysely } from "fastify-kysely";
 import { initDB } from "./database/init";
 import personRoutes from "./routes/persons";

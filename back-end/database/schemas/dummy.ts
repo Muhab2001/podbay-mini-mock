@@ -9,9 +9,7 @@ import {
 } from 'kysely'
 
 
-export interface Database {
-    person: PersonTable
-}
+
 
 export interface PersonTable {
 
