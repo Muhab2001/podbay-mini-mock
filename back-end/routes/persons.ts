@@ -5,6 +5,6 @@ export default async function personRoutes (fastify: FastifyInstance, options: F
     fastify.get('/:id', async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
         const { id } = request.params
         const person = await findPersonById(fastify.kysely.pg, parseInt(id))
-        reply.send(person)
+        return person
     })
 }

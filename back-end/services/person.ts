@@ -1,6 +1,7 @@
 import { Kysely } from 'kysely'
 import {initDB} from '../database/init'
-import { PersonUpdate, Person, NewPerson, Database } from '../database/schemas/dummy'
+import { PersonUpdate, Person, NewPerson } from '../database/schemas/dummy'
+import { Database } from '../database/schemas/full_db'
 
 
 export async function findPersonById(db: Kysely<Database>, id: number) {
