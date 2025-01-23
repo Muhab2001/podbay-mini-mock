@@ -1,15 +1,16 @@
-import {db} from '../database/init'
-import { PersonUpdate, Person, NewPerson } from '../database/schemas/dummy'
+import { Kysely } from 'kysely'
+import {initDB} from '../database/init'
+import { PersonUpdate, Person, NewPerson, Database } from '../database/schemas/dummy'
 
 
-export async function findPersonById(id: number) {
+export async function findPersonById(db: Kysely<Database>, id: number) {
     return await db.selectFrom('person')
     .where('id', '=', id)
     .selectAll()
     .executeTakeFirst()
 }
 
-export async function findPeople(criteria: Partial<Person>) {
+export async function findPeople(db: Kysely<Database>, criteria: Partial<Person>) {
     let query = db.selectFrom('person')
   
     if (criteria.id) {
@@ -39,19 +40,19 @@ export async function findPeople(criteria: Partial<Person>) {
     return await query.selectAll().execute()
   }
 
-export async function updatePerson(id: number, updateWith:PersonUpdate) {
+export async function updatePerson(db: Kysely<Database>, id: number, updateWith:PersonUpdate) {
 
     await db.updateTable('person').set(updateWith).where('id', '=', id).execute()   
 }
 
-export async function createPerson(person: NewPerson) {
+export async function createPerson(db: Kysely<Database>, person: NewPerson) {
     return await db.insertInto('person')
       .values(person)
       .returningAll()
       .executeTakeFirstOrThrow()
   }
   
-export async function deletePerson(id: number) {
+export async function deletePerson(db: Kysely<Database>, id: number) {
     return await db.deleteFrom('person').where('id', '=', id)
       .returningAll()
       .executeTakeFirst()

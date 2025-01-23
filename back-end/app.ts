@@ -1,15 +1,39 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import Fastify from 'fastify'
 import { hasZodFastifySchemaValidationErrors, isResponseSerializationError, serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
 import {pathToFileURL} from 'url'
 import { realpathSync } from "fs";
+import { Kysely } from "kysely";
+import { Database } from "./database/schemas/dummy";
+import { fastifyKysely } from "fastify-kysely";
+import { initDB } from "./database/init";
+import personRoutes from "./routes/persons";
 
-function init(){
+declare module 'fastify' {
+
+    interface FastifyKyselyNamespaces {
+        pg: Kysely<Database>
+    }
+}
+
+async function init(){
     const app = Fastify()
     app.setValidatorCompiler(validatorCompiler)
     app.setSerializerCompiler(serializerCompiler)
 
     const typed_app = app.withTypeProvider<ZodTypeProvider>()
+    await app.register(
+        fastifyKysely,
+        {
+            namespace: 'pg',
+            kysely: initDB()
+        }
+    )
+
+    
 
     typed_app.setErrorHandler((err, req, reply) => {
         if (hasZodFastifySchemaValidationErrors(err)) {
@@ -60,6 +84,10 @@ function init(){
 
     })
 
+    typed_app.register(personRoutes, {
+        'prefix': '/persons'
+    })
+
     return typed_app
 }
 
@@ -80,7 +108,7 @@ function wasCalledAsScript() {
 
 if (wasCalledAsScript()) {
     // called directly i.e. "node app"
-    const app = init();
+    const app = await init();
     try {
       await app.listen({ port: 3000 });
       console.log('server listening on 3000');

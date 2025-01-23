@@ -9,6 +9,13 @@ declare global {
       DB_HOST: string;
     }
   }
+
+  
 }
+
+
+
+
+
 
 export {}

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "start": "node app.js",
+    "start": "tsx watch app.ts",
     "test": "node --import tsx --test tests/*spec.ts"
   },
   "keywords": [],
@@ -16,6 +16,7 @@
     "@fastify/aws-lambda": "^5.0.0",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
+    "fastify-kysely": "^2.0.0",
     "fastify-type-provider-zod": "^4.0.2",
     "kysely": "^0.27.5",
     "pg": "^8.13.1",
@@ -24,6 +25,8 @@
   "devDependencies": {
     "@types/node": "^22.10.7",
     "@types/pg": "^8.11.10",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }

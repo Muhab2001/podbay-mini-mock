@@ -1,5 +1,5 @@
 import { sql } from "kysely";
-import {db} from '../database/init'
+import {initDB} from '../database/init'
 
 // describe("database_repo", () => {
 //     () => {
@@ -18,6 +18,8 @@ import {db} from '../database/init'
 // }})
 
 (async () => {
+
+  const db = initDB()
   await db.schema.createTable('person')
     .addColumn('id', 'serial', (cb) => cb.primaryKey())
     .addColumn('first_name', 'varchar', (cb) => cb.notNull())
