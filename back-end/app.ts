@@ -11,8 +11,10 @@ import { Database } from "./database/schemas/full_db";
 import { fastifyKysely } from "fastify-kysely";
 import { initDB } from "./database/init";
 import personRoutes from "./routes/persons";
+import podcastRoutes from "./routes/podcasts";
 
 declare module 'fastify' {
+    
 
     interface FastifyKyselyNamespaces {
         pg: Kysely<Database>
@@ -84,8 +86,8 @@ async function init(){
 
     })
 
-    typed_app.register(personRoutes, {
-        'prefix': '/persons'
+    typed_app.register(podcastRoutes, {
+        'prefix': '/podcasts'
     })
 
     return typed_app

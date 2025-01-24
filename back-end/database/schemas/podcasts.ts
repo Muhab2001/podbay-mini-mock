@@ -13,7 +13,10 @@ export interface PodcastsTable {
 
     id: Generated<number>
     iTunesCollectionId: number // the podcast collectin id coming from itunes
-    name: string
+    iTunesTrackId: number // the podcast track id coming from itunes
+    trackName: string
+    collectionName: string
+    // URLs for the podcast artwork (thumbnail)
     artworkUrl100: string | null;
     artworkUrl60: string | null;
     artworkUrl30: string | null;
@@ -22,7 +25,7 @@ export interface PodcastsTable {
     requestCount: number
     // when was this record cached
     addedAt: ColumnType<Date, string | undefined, never>
-    lastUpdatedAt: ColumnType<Date, string | undefined, never>
+    lastUpdatedAt: ColumnType<Date, string | undefined, string | undefined>
 }
 
 export type Podcast = Selectable<PodcastsTable>

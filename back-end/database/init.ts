@@ -1,6 +1,6 @@
 
 
-import { Database } from "./schemas/dummy";
+import { Database } from './schemas/full_db';
 import  pg from 'pg';
 const {Pool} = pg
 import { Kysely, PostgresDialect } from "kysely";
@@ -26,5 +26,3 @@ export const initDB = () => {
     })
     
 }
-
-initDB()
