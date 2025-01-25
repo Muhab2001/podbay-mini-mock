@@ -2,6 +2,27 @@ import { iTunesSearchResult, searchiTunesPodcasts } from "../integrations/itunes
 import { Database } from '../database/schemas/full_db'
 import { Kysely, sql } from "kysely";
 import { ReadPodcastResponse } from "../types/podcasts";
+import { Podcast } from "../database/schemas/podcasts";
+
+
+export function serializePodcasts(podcasts: Podcast[]) {
+    /**
+     * Utility to format podcasts to the intended DTO format
+     */
+
+    return podcasts.map(podcast => {
+        return {
+            collectionId: podcast.iTunesCollectionId,
+            trackId: podcast.iTunesTrackId,
+            artistName: podcast.artistName,
+            trackName: podcast.trackName,
+            collectionName: podcast.collectionName,
+            artworkUrl100: podcast.artworkUrl100,
+            artworkUrl60: podcast.artworkUrl60,
+            artworkUrl30: podcast.artworkUrl30
+        }
+    })
+}
 
 export async function searchPodcasts(db: Kysely<Database>, term: string, limit: number): Promise<{results: ReadPodcastResponse[], is_cached: boolean}> {
     /**
@@ -21,13 +42,22 @@ export async function searchPodcasts(db: Kysely<Database>, term: string, limit: 
      *  - is_cached: boolean - whether the results are taken from the DB instead of iTunes API
      */
     try{
+        
+        if (term.length < 1) {
+            return {
+                results: serializePodcasts(await getLatestPodcasts(db, limit)),
+                is_cached: false
+            }
+        }
         const response = await searchiTunesPodcasts(term, limit)
+        
         if (response.status == 200) {
             // we do not want to leak the explicit names of the podcasts
             const results = response.data.results.map(podcast => ({
                 ...podcast,
                 trackName: podcast.trackCensoredName,
-                collectionCensoredName: podcast.collectionCensoredName
+                collectionCensoredName: podcast.collectionCensoredName,
+                artworkUrl60: podcast.artworkUrl600
 
             }))
 
@@ -45,24 +75,29 @@ export async function searchPodcasts(db: Kysely<Database>, term: string, limit: 
     const cachedPodcasts = await findPodcastsWithFuzzySearch(db, term, limit)
 
     return {
-        results: cachedPodcasts.map(podcast => {
-            return {
-                collectionId: podcast.iTunesCollectionId,
-                trackId: podcast.iTunesTrackId,
-                artistName: podcast.artistName,
-                trackName: podcast.trackName,
-                collectionName: podcast.collectionName,
-                artworkUrl100: podcast.artworkUrl100,
-                artworkUrl60: podcast.artworkUrl60,
-                artworkUrl30: podcast.artworkUrl30
-            }
-        }),
+        results: serializePodcasts(cachedPodcasts),
         is_cached: true
     }
     
     
     
 }
+
+export async function getLatestPodcasts(db: Kysely<Database>, limit: number) {
+    /**
+     * Function that returns the latest podcasts from the database.
+     *
+     * @param db: Kysely<Database> - the database object
+     * @param limit: number - the number of results to return
+     **/
+    return await db
+    .selectFrom('podcasts')
+    .selectAll()
+    .orderBy('lastUpdatedAt', 'desc')
+    .limit(limit)
+    .execute()
+}
+
 
 export async function findPodcastsWithFuzzySearch(db: Kysely<Database>, term: string, limit: number, threshold_cutoff: number = 0.3) {
     /**

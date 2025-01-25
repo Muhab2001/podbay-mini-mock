@@ -10,7 +10,6 @@ import { Kysely } from "kysely";
 import { Database } from "./database/schemas/full_db";
 import { fastifyKysely } from "fastify-kysely";
 import { initDB } from "./database/init";
-import personRoutes from "./routes/persons";
 import podcastRoutes from "./routes/podcasts";
 
 declare module 'fastify' {
@@ -112,7 +111,7 @@ if (wasCalledAsScript()) {
     // called directly i.e. "node app"
     const app = await init();
     try {
-      await app.listen({ port: 3000 });
+      await app.listen({ port: 8000 });
       console.log('server listening on 3000');
     } catch (err) {
       console.error(err);

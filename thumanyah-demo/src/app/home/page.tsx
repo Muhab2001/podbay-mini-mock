@@ -1,11 +1,28 @@
-import SideNavbar from "@/components/ui/navbars/side-navbar";
-import { TopNavbar } from "@/components/ui/navbars/top-navbar";
+import { searchPodcasts } from "@/actions/podcasts"
+import PodcastGridView from "@/components/local/podcasts/grid-view"
+import PodcastScrollView from "@/components/local/podcasts/scroll-view"
 
 
-export default function Home() {
 
-    return <div className="bg-[var:--background]">
-    <TopNavbar/>
-       <SideNavbar/>
-    </div>
+export default async function Home({searchParams}: {
+    searchParams?: {
+        query: string | null,
+        view: "grid" | "scroll"
+    }
+}) {
+
+    const incomingParams = (await searchParams)
+
+    let view = "scroll"
+    if (incomingParams?.view && incomingParams?.view !== null) {
+        view = incomingParams?.view
+    }
+    
+    
+
+    const podcasts = await searchPodcasts(incomingParams?.query || "") 
+
+    return <>
+    {view == "scroll" ? <PodcastScrollView searchParams={incomingParams} podcasts={podcasts}/>: <PodcastGridView searchParams={incomingParams}  podcasts={podcasts}/>}
+    </>
 }

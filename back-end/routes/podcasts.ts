@@ -11,10 +11,10 @@ export default async function podcastRoutes(fastify: FastifyInstance, options: F
         url: '/',
         schema: {
             querystring: z.object({
-                term: z.string().min(1),
+                term: z.string().min(0).default(''),
                 // we need coercion as default zod
                 // treats all params as strings
-                limit: z.coerce.number().int().min(1).max(25)
+                limit: z.coerce.number().int().min(0).max(25).default(20)
             }),
             response: {
                 200: z.object({
