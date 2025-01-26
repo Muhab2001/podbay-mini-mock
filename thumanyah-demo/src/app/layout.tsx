@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
+import { TopNavbar } from "@/components/local/navbars/top-navbar";
+import SideNavbar from "@/components/local/navbars/side-navbar";
 
 const ibmPlexBold = IBM_Plex_Sans_Arabic({
   variable: "--font-ibm-plex-bold",
@@ -30,7 +32,13 @@ export default function RootLayout({
       <body
         className={`${ibmPlexBold.variable} ${ibmPlex.variable} antialiased`}
       >
+         <div className="bg-[var:--background]">
+    <TopNavbar/>
+    <SideNavbar/>
+    <section className="w-full sm:w-[calc(100%-14rem)] sm:ml-[14rem] flex flex-col gap-5 mt-[90] py-[20]">
         {children}
+    </section>
+    </div>
       </body>
     </html>
   );

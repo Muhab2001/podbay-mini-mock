@@ -17,7 +17,7 @@ export function TopNavbar(){
 
     const [query, setValue] = useState("")
     useDebounce(query, 500, (value: string) => {
-        router.push('/home?' + new URLSearchParams({
+        router.push('/?' + new URLSearchParams({
             query: value,
             view: searchParams.get("view") || "scroll"
 

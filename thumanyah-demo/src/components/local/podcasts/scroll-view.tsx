@@ -4,7 +4,6 @@ import Header from "../utils/header"
 import { DoubleChevronButton } from "../utils/double-chevron-button"
 import ViewSwitcher from "../home/view-switcher"
 import { PodcastSquareCard } from "./square-card"
-import styles from '@/app/styles/home.module.css'
 import { useRef } from "react"
 
 export default function PodcastScrollView({

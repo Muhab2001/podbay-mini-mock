@@ -21,7 +21,7 @@ export default function ViewSwitcher({view = "scroll", query} : {
         {(view === "grid") && 
         <MenubarItem onClick={() => {
             router.push(
-                '/home?' + new URLSearchParams({
+                '/?' + new URLSearchParams({
                     view: "scroll",
                     query: query ? query : ""
                 }).toString()
@@ -32,7 +32,7 @@ export default function ViewSwitcher({view = "scroll", query} : {
         (view === "scroll") &&
         <MenubarItem onClick={() => {
             router.push(
-                '/home?' + new URLSearchParams({
+                '/?' + new URLSearchParams({
                     view: "grid",
                     query: query ? query : ""
                 }).toString())

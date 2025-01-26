@@ -1,6 +1,5 @@
 import { ReadPodcastResponse } from "@/lib/types/podcasts"
 import Header from "../utils/header"
-import { DoubleChevronButton } from "../utils/double-chevron-button"
 import { PodcastSquareCard } from "./square-card"
 import ViewSwitcher from "../home/view-switcher"
 

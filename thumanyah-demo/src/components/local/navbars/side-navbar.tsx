@@ -26,8 +26,8 @@ export default function SideNavbar() {
                   priority
                 />
     <section className="flex flex-col w-full h-full">
-    <NavBarItem icon={<Orbit color={getIconColor('/home')} size={18}/>} link="/home">
-    <span className={"/home" == pathname ? 'text-[#BA6FDE]' : ""}>Home</span>
+    <NavBarItem icon={<Orbit color={getIconColor('/')} size={18}/>} link="/">
+    <span className={"/" == pathname ? 'text-[#BA6FDE]' : ""}>Home</span>
     </NavBarItem>
     <NavBarItem icon={<Rocket color={iconColor} size={18}/>} link="/">
     <span>Discover</span>
