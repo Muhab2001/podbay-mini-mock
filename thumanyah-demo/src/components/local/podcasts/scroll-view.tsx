@@ -7,25 +7,17 @@ import { PodcastSquareCard } from "./square-card"
 import { useRef } from "react"
 
 export default function PodcastScrollView({
-    podcasts, searchParams
+    podcasts, title, subtitle, view, query
 }: {
     podcasts: ReadPodcastResponse[],
-    searchParams?: {
-        query?: string | null,
-        view: "grid" | "scroll"
-    }
+    title: string,
+    subtitle: string | null,
+    view: "grid" | "scroll",
+    query: string
 }) {
 
-    let title = "Trending podcasts in all genres"
-    let subtitle: string | null = "The most popular podcasts overall now. Last updated an hour ago."
-    if (searchParams?.query) {
-        title = `Top podcasts for ${searchParams.query}`
-        subtitle = null
-    }
 
     const scrollContainerRef = useRef<HTMLDivElement>(null)
-
-
 
     return <>
     <Header title={title} subtitle={subtitle}>
@@ -43,7 +35,7 @@ export default function PodcastScrollView({
                     }}
                     color="#86858F"
                     />
-                    <ViewSwitcher view={searchParams?.view || "scroll"} query={searchParams?.query || ""} />
+                    <ViewSwitcher view={view} query={query || ""} />
             </div>
     </Header>
     <div ref={scrollContainerRef} style={{

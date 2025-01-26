@@ -8,11 +8,13 @@ interface SearchPodcastResponse {
     statusCode: number
 }
 
-export async function searchPodcasts(query: string) {
+export async function searchPodcasts(query: string, page: number = 1) {
+    
 
     const response = await fetch(process.env.BASE_URL as string + '?' + new URLSearchParams({
         term: query,
-        limit: "25"
+        limit: "25",
+        page: page.toString()
     }).toString(), {
         'cache': 'no-store'
     })

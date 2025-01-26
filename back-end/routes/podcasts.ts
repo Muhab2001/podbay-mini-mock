@@ -3,6 +3,7 @@ import { ZodTypeProvider } from "fastify-type-provider-zod";
 import {z} from 'zod'
 import { searchPodcasts } from "../services/podcasts";
 import { cacheiTunesPodcasts } from "../integrations/itunes";
+import { emitWarning } from "node:process";
 
 export default async function podcastRoutes(fastify: FastifyInstance, options: FastifyPluginOptions) {
 
@@ -14,7 +15,8 @@ export default async function podcastRoutes(fastify: FastifyInstance, options: F
                 term: z.string().min(0).default(''),
                 // we need coercion as default zod
                 // treats all params as strings
-                limit: z.coerce.number().int().min(0).max(25).default(20)
+                limit: z.coerce.number().int().min(0).max(25).default(20),
+                page: z.coerce.number().int().min(1).default(1)
             }),
             response: {
                 200: z.object({
@@ -47,7 +49,7 @@ export default async function podcastRoutes(fastify: FastifyInstance, options: F
         handler: async (req, res) => {
             // TODO: should set the db instance as a plugin
             // with shorter access path
-            const {results, is_cached} = await searchPodcasts(fastify.kysely.pg, req.query.term, req.query.limit)
+            const {results, is_cached} = await searchPodcasts(fastify.kysely.pg, req.query.term, req.query.limit, req.query.page)
             
             
             

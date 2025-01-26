@@ -2,29 +2,30 @@ import { ReadPodcastResponse } from "@/lib/types/podcasts"
 import Header from "../utils/header"
 import { PodcastSquareCard } from "./square-card"
 import ViewSwitcher from "../home/view-switcher"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 
  
 export default function PodcastGridView({
     podcasts,
-    searchParams
+    title, subtitle, view, query, isLoading, onLoadMore, isDone
 }: {
     podcasts: ReadPodcastResponse[],
-    searchParams?: {
-        query?: string | undefined | null
-        view: "grid" | "scroll"
-    }
+    title: string,
+    subtitle: string | null,
+    view: "grid" | "scroll",
+    query: string,
+    isLoading: boolean,
+    isDone: boolean
+    onLoadMore: () => void
 }) {
 
-    let subtitle = "The most popular podcasts overall now. Last updated an hour ago."
-    if (searchParams?.query) {
-        subtitle = `Top podcasts for ${searchParams.query}`
-    }
 
 
     return <>
-    <Header title="Trending podcasts in all genres" subtitle={subtitle}>
+    <Header title={title} subtitle={subtitle}>
         <div className="pr-2">
-        <ViewSwitcher view={searchParams?.view || "scroll"} query={searchParams?.query || ""} />
+        <ViewSwitcher view={view} query={query || ""} />
         </div>
     </Header>
     <div className="p-4 flex flex-row gap-2 flex-wrap">
@@ -32,6 +33,17 @@ export default function PodcastGridView({
                 return <PodcastSquareCard key={index} podcast={podcast} index={index+1}/>
             })
             }
+        {
+            (isLoading && podcasts.length ===0) && Array.from({length: 6}).map((_, index) => {
+                return <Skeleton key={index} style={{width: "calc(25% - 0.5rem)"}} className="h-24"/>
+            })
+        }
     </div>
+    { !isDone &&  <div className="flex justify-center">
+        <Button size={"sm"} className="hover:underline hover:bg-transparent hover:text-white border-gray-700" onClick={onLoadMore} variant={"outline"}>{
+            isLoading ? "Loading..." : "Load more"
+            }</Button>
+
+    </div>}
     </>
 }

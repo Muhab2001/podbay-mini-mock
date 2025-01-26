@@ -24,7 +24,7 @@ export function serializePodcasts(podcasts: Podcast[]) {
     })
 }
 
-export async function searchPodcasts(db: Kysely<Database>, term: string, limit: number): Promise<{results: ReadPodcastResponse[], is_cached: boolean}> {
+export async function searchPodcasts(db: Kysely<Database>, term: string, limit: number, page: number): Promise<{results: ReadPodcastResponse[], is_cached: boolean}> {
     /**
      * Function that uses the iTunes API to search for podcasts in the following cases:
      * 
@@ -45,12 +45,11 @@ export async function searchPodcasts(db: Kysely<Database>, term: string, limit: 
         
         if (term.length < 1) {
             return {
-                results: serializePodcasts(await getLatestPodcasts(db, limit)),
+                results: serializePodcasts(await getLatestPodcasts(db, limit, page)),
                 is_cached: false
             }
         }
-        const response = await searchiTunesPodcasts(term, limit)
-        
+        const response = await searchiTunesPodcasts(term, limit, page)
         if (response.status == 200) {
             // we do not want to leak the explicit names of the podcasts
             const results = response.data.results.map(podcast => ({
@@ -83,17 +82,22 @@ export async function searchPodcasts(db: Kysely<Database>, term: string, limit: 
     
 }
 
-export async function getLatestPodcasts(db: Kysely<Database>, limit: number) {
+export async function getLatestPodcasts(db: Kysely<Database>, limit: number, page: number) {
     /**
      * Function that returns the latest podcasts from the database.
      *
      * @param db: Kysely<Database> - the database object
      * @param limit: number - the number of results to return
+     * @param page: number - the page number
      **/
+
+    const offset = (page - 1) * limit
+
     return await db
     .selectFrom('podcasts')
     .selectAll()
-    .orderBy('lastUpdatedAt', 'desc')
+    .orderBy('requestCount', 'desc')
+    .offset(offset)
     .limit(limit)
     .execute()
 }

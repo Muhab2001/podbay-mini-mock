@@ -25,12 +25,15 @@ interface iTunesSearchPayload {
 }
 
 //  TODO: use a strong type to define the itunes resposne format
-export async function searchiTunesPodcasts(term: string, limit: number): Promise<ThirdPartyHttpAPIResponse<iTunesSearchPayload>> {
+export async function searchiTunesPodcasts(term: string, limit: number, page: number): Promise<ThirdPartyHttpAPIResponse<iTunesSearchPayload>> {
+
+    const offset = (page - 1) * limit
 
     const query_params = new URLSearchParams({
         media: 'podcast',
         term: term,
-        limit: limit.toString()
+        limit: limit.toString(),
+        offset: offset.toString()
     })
     const response = await fetch('https://itunes.apple.com/search?' + query_params.toString())
     const data: iTunesSearchPayload = await response.json()
